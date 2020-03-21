@@ -85,9 +85,11 @@ const List = ({ listId }) => {
       ) : (
         <main role="main" className="container">
           <h1>{list.title}</h1>
-          {columns.map((column) => (
-            <Column {...column} key={column.id} />
-          ))}
+          {columns && columns.length ? (
+            columns.map((column) => <Column {...column} key={column.id} />)
+          ) : (
+            <p>No columns</p>
+          )}
         </main>
       )}
     </div>

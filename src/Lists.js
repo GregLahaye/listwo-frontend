@@ -6,7 +6,39 @@ const Lists = () => {
   const [auth] = useContext(AuthContext);
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [title, setTitle] = useState("");
   const [error, setError] = useState("");
+
+  const handleAddList = (event) => {
+    event.preventDefault();
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+
+    const form = new FormData();
+    form.append("title", title);
+
+    fetch("http://localhost:8080/lists", {
+      method: "POST",
+      headers,
+      body: form,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw response;
+      })
+      .then((data) => {
+        setLists([...lists, data]);
+      })
+      .catch(() => {
+        setError("Unknown Error");
+      });
+
+    setTitle("");
+  };
 
   useEffect(() => {
     if (!auth.accessToken) {
@@ -46,16 +78,35 @@ const Lists = () => {
         </div>
       ) : loading ? (
         <p>Loading</p>
-      ) : lists.length ? (
-        <ul className="list-group">
-          {lists.map((list) => (
-            <li className="list-group-item" key={list.id}>
-              <Link to={list.id}>{list.title}</Link>
-            </li>
-          ))}
-        </ul>
       ) : (
-        <p>No lists</p>
+        <ul className="list-group">
+          {lists.length ? (
+            lists.map((list) => (
+              <li className="list-group-item" key={list.id}>
+                <Link to={list.id}>{list.title}</Link>
+              </li>
+            ))
+          ) : (
+            <p>No lists</p>
+          )}
+          <li className="list-group-item">
+            <form onSubmit={handleAddList}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="list-title"
+                  placeholder="My new list"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="btn btn-primary">
+                Add list
+              </button>
+            </form>
+          </li>
+        </ul>
       )}
     </div>
   );
