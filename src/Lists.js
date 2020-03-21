@@ -9,8 +9,8 @@ const Lists = () => {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
 
-  const handleAddList = (event) => {
-    event.preventDefault();
+  const handleAddList = (e) => {
+    e.preventDefault();
 
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);

@@ -8,7 +8,40 @@ const List = ({ listId }) => {
   const [list, setList] = useState({});
   const [columns, setColumns] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [title, setTitle] = useState("");
   const [error, setError] = useState("");
+
+  const handleAddColumn = (e) => {
+    e.preventDefault();
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+
+    const form = new FormData();
+    form.append("list", listId);
+    form.append("title", title);
+
+    fetch("http://localhost:8080/columns", {
+      method: "POST",
+      headers,
+      body: form,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw response;
+      })
+      .then((data) => {
+        setColumns([...columns, data]);
+      })
+      .catch(() => {
+        setError("Unknown Error");
+      });
+
+    setTitle("");
+  };
 
   const fetchList = () => {
     const url = new URL("http://localhost:8080/list");
@@ -55,7 +88,7 @@ const List = ({ listId }) => {
         throw response;
       })
       .then((data) => {
-        setColumns(data);
+        setColumns(data || []);
         setLoading(false);
       })
       .catch(() => {
@@ -85,6 +118,21 @@ const List = ({ listId }) => {
       ) : (
         <main role="main" className="container">
           <h1>{list.title}</h1>
+          <form onSubmit={handleAddColumn}>
+            <div className="form-group">
+              <input
+                type="text"
+                className="form-control"
+                id="column-title"
+                placeholder="My new column"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary">
+              Add list
+            </button>
+          </form>
           {columns && columns.length ? (
             columns.map((column) => <Column {...column} key={column.id} />)
           ) : (
