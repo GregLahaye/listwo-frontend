@@ -14,6 +14,8 @@ const List = ({ listId }) => {
   const handleAddColumn = (e) => {
     e.preventDefault();
 
+    if (!title.trim()) return;
+
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);
 
@@ -117,27 +119,31 @@ const List = ({ listId }) => {
         <p>Loading</p>
       ) : (
         <main role="main" className="container">
-          <h1>{list.title}</h1>
-          <form onSubmit={handleAddColumn}>
-            <div className="form-group">
-              <input
-                type="text"
-                className="form-control"
-                id="column-title"
-                placeholder="My new column"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Add list
-            </button>
-          </form>
-          {columns && columns.length ? (
-            columns.map((column) => <Column {...column} key={column.id} />)
-          ) : (
-            <p>No columns</p>
-          )}
+          <div className="row">
+            <h1>{list.title}</h1>
+            <form className="form-inline" onSubmit={handleAddColumn}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="column-title"
+                  placeholder="My new column"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="btn btn-primary">
+                Add list
+              </button>
+            </form>
+          </div>
+          <div className="card-deck">
+            {columns && columns.length ? (
+              columns.map((column) => <Column {...column} key={column.id} />)
+            ) : (
+              <p>No columns</p>
+            )}
+          </div>
         </main>
       )}
     </div>

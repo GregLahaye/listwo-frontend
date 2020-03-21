@@ -12,6 +12,8 @@ const Column = ({ id: columnId, title }) => {
   const handleAddItem = (e) => {
     e.preventDefault();
 
+    if (!itemTitle.trim()) return;
+
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);
 
@@ -82,41 +84,35 @@ const Column = ({ id: columnId, title }) => {
       ) : loading ? (
         <p>Loading</p>
       ) : (
-        <main role="main" className="container">
-          <div className="card">
-            <div className="card-header">{title}</div>
-            <div className="card-body">
-              <ul className="list-group">
-                {items && items.length ? (
-                  items.map((item) => (
-                    <li key={item.id} className="list-group-item">
-                      {item.title}
-                    </li>
-                  ))
-                ) : (
-                  <p>No items</p>
-                )}
-                <li className="list-group-item">
-                  <form onSubmit={handleAddItem}>
-                    <div className="form-group">
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="item-title"
-                        placeholder="My new item"
-                        value={itemTitle}
-                        onChange={(e) => setItemTitle(e.target.value)}
-                      />
-                    </div>
-                    <button type="submit" className="btn btn-primary">
-                      Add item
-                    </button>
-                  </form>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </main>
+        <div className="card">
+          <div className="card-header">{title}</div>
+          <ul className="list-group">
+            {items && items.length
+              ? items.map((item) => (
+                  <li key={item.id} className="list-group-item">
+                    {item.title}
+                  </li>
+                ))
+              : null}
+            <li className="list-group-item">
+              <form onSubmit={handleAddItem}>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="item-title"
+                    placeholder="My new item"
+                    value={itemTitle}
+                    onChange={(e) => setItemTitle(e.target.value)}
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  Add item
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
       )}
     </div>
   );

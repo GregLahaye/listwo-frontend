@@ -12,6 +12,8 @@ const Lists = () => {
   const handleAddList = (e) => {
     e.preventDefault();
 
+    if (!title.trim()) return;
+
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);
 
@@ -61,7 +63,7 @@ const Lists = () => {
         throw response;
       })
       .then((data) => {
-        setLists(data);
+        setLists(data || []);
         setLoading(false);
       })
       .catch(() => {
