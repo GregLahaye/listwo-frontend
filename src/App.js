@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import AuthContext, { blankState } from "./AuthContext";
 import React, { useState } from "react";
+import AuthContext from "./AuthContext";
 import Header from "./Header";
 import List from "./List";
 import Lists from "./Lists";
@@ -12,7 +12,8 @@ import Welcome from "./Welcome";
 import { render } from "react-dom";
 
 const App = () => {
-  const auth = useState(blankState);
+  const { id, email, accessToken } = localStorage;
+  const auth = useState({ id, email, accessToken });
 
   return (
     <AuthContext.Provider value={auth}>
