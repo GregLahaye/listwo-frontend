@@ -212,7 +212,7 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
           <div className="card-header d-flex align-items-center">
             <h5 className="mr-auto">{title}</h5>
             <button
-              className="btn btn-danger"
+              className="btn btn-secondary"
               onClick={() => handleDeleteColumn(columnId)}
             >
               Delete
@@ -255,7 +255,7 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
                                     </button>
                                   )}
                                   <button
-                                    className="btn btn-danger float-right"
+                                    className="btn btn-sm btn-light float-right"
                                     onClick={() => handleDeleteItem(item.id)}
                                   >
                                     ✘
