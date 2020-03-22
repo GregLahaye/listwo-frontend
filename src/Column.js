@@ -3,7 +3,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import React, { useContext, useEffect, useState } from "react";
 import { navigate } from "@reach/router";
 
-const Column = ({ id: columnId, title }) => {
+const Column = ({ id: columnId, title, handleDeleteColumn }) => {
   const [auth, setAuth] = useContext(AuthContext);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -158,7 +158,15 @@ const Column = ({ id: columnId, title }) => {
         <p>Loading</p>
       ) : (
         <div className="card">
-          <h5 className="card-header">{title}</h5>
+          <div className="card-header d-flex align-items-center">
+            <h5 className="mr-auto">{title}</h5>
+            <button
+              className="btn btn-danger"
+              onClick={() => handleDeleteColumn(columnId)}
+            >
+              Delete
+            </button>
+          </div>
           {items && items.length ? (
             <ul className="list-group">
               <DragDropContext onDragEnd={onDragEnd}>

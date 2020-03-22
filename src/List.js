@@ -11,6 +11,45 @@ const List = ({ listId }) => {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
 
+  const handleDeleteColumn = (id) => {
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+
+    const form = new FormData();
+    form.append("id", id);
+
+    fetch("http://localhost:8080/columns", {
+      method: "DELETE",
+      headers,
+      body: form,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw response;
+      })
+      .then((data) => {
+        setColumns(columns.filter((column) => column.id != data));
+      })
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize(setAuth);
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
+      });
+  };
+
   const handleAddColumn = (e) => {
     e.preventDefault();
 
@@ -176,7 +215,13 @@ const List = ({ listId }) => {
           </div>
           <div className="card-deck text-center justify-content-center">
             {columns && columns.length
-              ? columns.map((column) => <Column {...column} key={column.id} />)
+              ? columns.map((column) => (
+                  <Column
+                    {...column}
+                    handleDeleteColumn={handleDeleteColumn}
+                    key={column.id}
+                  />
+                ))
               : null}
           </div>
         </main>
