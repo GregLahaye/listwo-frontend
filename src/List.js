@@ -119,7 +119,7 @@ const List = ({ listId }) => {
         <p>Loading</p>
       ) : (
         <main role="main" className="container">
-          <div className="row">
+          <div className="d-flex justify-content-between">
             <h1>{list.title}</h1>
             <form className="form-inline" onSubmit={handleAddColumn}>
               <div className="form-group">
@@ -137,7 +137,7 @@ const List = ({ listId }) => {
               </button>
             </form>
           </div>
-          <div className="card-deck">
+          <div className="card-deck text-center justify-content-center">
             {columns && columns.length ? (
               columns.map((column) => <Column {...column} key={column.id} />)
             ) : (

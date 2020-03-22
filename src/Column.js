@@ -130,9 +130,9 @@ const Column = ({ id: columnId, title }) => {
         <p>Loading</p>
       ) : (
         <div className="card">
-          <div className="card-header">{title}</div>
-          <ul className="list-group">
-            {items && items.length ? (
+          <h5 className="card-header">{title}</h5>
+          {items && items.length ? (
+            <ul className="list-group">
               <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable">
                   {(provided) => (
@@ -162,25 +162,25 @@ const Column = ({ id: columnId, title }) => {
                   )}
                 </Droppable>
               </DragDropContext>
-            ) : null}
-            <li className="list-group-item">
-              <form onSubmit={handleAddItem}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="item-title"
-                    placeholder="My new item"
-                    value={itemTitle}
-                    onChange={(e) => setItemTitle(e.target.value)}
-                  />
-                </div>
-                <button type="submit" className="btn btn-primary">
-                  Add item
-                </button>
-              </form>
-            </li>
-          </ul>
+            </ul>
+          ) : null}
+          <div className="card-footer">
+            <form onSubmit={handleAddItem}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="item-title"
+                  placeholder="My new item"
+                  value={itemTitle}
+                  onChange={(e) => setItemTitle(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="btn btn-primary">
+                Add item
+              </button>
+            </form>
+          </div>
         </div>
       )}
     </div>
