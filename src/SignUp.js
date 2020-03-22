@@ -1,9 +1,9 @@
+import AuthContext, { validAuth } from "./AuthContext";
 import React, { useContext, useState } from "react";
-import AuthContext from "./AuthContext";
-import { navigate } from "@reach/router";
+import { Redirect, navigate } from "@reach/router";
 
 const SignUp = () => {
-  const [, setAuth] = useContext(AuthContext);
+  const [auth, setAuth] = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -42,8 +42,11 @@ const SignUp = () => {
       });
   };
 
-  return (
-    <div>
+  return validAuth(auth) ? (
+    <Redirect to="/lists" />
+  ) : (
+    <main role="main" className="container">
+      <h1>Sign Up</h1>
       <form onSubmit={handleSignUp}>
         <div className="form-group">
           <label htmlFor="email">Email address</label>
@@ -70,7 +73,10 @@ const SignUp = () => {
         <button type="submit" className="btn btn-primary">
           Submit
         </button>
-      </form>{" "}
+      </form>
+      <button className="btn btn-secondary" onClick={() => navigate("/signin")}>
+        Switch to Sign In
+      </button>
       <div>
         {error ? (
           <div className="alert alert-danger" role="alert">
@@ -78,7 +84,7 @@ const SignUp = () => {
           </div>
         ) : null}
       </div>
-    </div>
+    </main>
   );
 };
 
