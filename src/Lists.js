@@ -150,7 +150,9 @@ const Lists = () => {
           {lists.length
             ? lists.map((list) => (
                 <li className="list-group-item" key={list.id}>
-                  <Link to={list.id}>{list.title}</Link>
+                  <Link to={list.id} className="btn btn-link">
+                    {list.title}
+                  </Link>
                   <button
                     className="btn btn-danger float-right"
                     onClick={() => handleDeleteList(list.id)}

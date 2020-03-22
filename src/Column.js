@@ -219,7 +219,7 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
             </button>
           </div>
           {items && items.length ? (
-            <ul className="list-group">
+            <ul className="list-group list-group-flush">
               <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable">
                   {(provided) => (
