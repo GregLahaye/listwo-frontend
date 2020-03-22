@@ -76,6 +76,10 @@ const Column = ({ id: columnId, title }) => {
       });
   }, [auth.id, columnId]);
 
+  const handleClick = (id) => {
+    reorder(id, 0, items.length - 1);
+  };
+
   const reorder = (id, src, dst) => {
     const dir = src > dst ? 1 : -1;
 
@@ -147,12 +151,25 @@ const Column = ({ id: columnId, title }) => {
                           >
                             {(provided) => (
                               <li
-                                className="list-group-item"
+                                className={
+                                  +item.position
+                                    ? "list-group-item"
+                                    : "list-group-item active"
+                                }
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                               >
-                                {item.title}
+                                {+item.position ? (
+                                  item.title
+                                ) : (
+                                  <button
+                                    className="btn btn-primary"
+                                    onClick={() => handleClick(item.id)}
+                                  >
+                                    {item.title}
+                                  </button>
+                                )}
                               </li>
                             )}
                           </Draggable>
