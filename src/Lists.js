@@ -34,6 +34,7 @@ const Lists = () => {
       })
       .then((data) => {
         setLists([...lists, data]);
+        navigate("./lists/" + data.id);
       })
       .catch((err) => {
         switch (err.status) {
