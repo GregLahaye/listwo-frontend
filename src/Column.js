@@ -17,7 +17,7 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
     const form = new FormData();
     form.append("id", id);
 
-    fetch("http://localhost:8080/items", {
+    fetch(`${process.env.API_URL}/items`, {
       method: "DELETE",
       headers,
       body: form,
@@ -73,7 +73,7 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
     form.append("column", columnId);
     form.append("title", itemTitle);
 
-    fetch("http://localhost:8080/items", {
+    fetch(`${process.env.API_URL}/items`, {
       method: "POST",
       headers,
       body: form,
@@ -113,7 +113,7 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
       return;
     }
 
-    const url = new URL("http://localhost:8080/items");
+    const url = new URL(`${process.env.API_URL}/items`);
     url.searchParams.set("column", columnId);
 
     const headers = new Headers();
@@ -174,7 +174,7 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
 
     setItems(reordered);
 
-    const url = new URL("http://localhost:8080/items");
+    const url = new URL(`${process.env.API_URL}/items`);
     url.searchParams.set("id", id);
     url.searchParams.set("src", src);
     url.searchParams.set("dst", dst);

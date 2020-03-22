@@ -15,7 +15,7 @@ const SignIn = () => {
     form.append("email", email);
     form.append("password", password);
 
-    fetch("http://localhost:8080/signin", {
+    fetch(`${process.env.API_URL}/signin`, {
       method: "POST",
       body: form,
     })

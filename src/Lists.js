@@ -16,7 +16,7 @@ const Lists = () => {
     const form = new FormData();
     form.append("id", id);
 
-    fetch("http://localhost:8080/lists", {
+    fetch(`${process.env.API_URL}/lists`, {
       method: "DELETE",
       headers,
       body: form,
@@ -59,7 +59,7 @@ const Lists = () => {
     const form = new FormData();
     form.append("title", title);
 
-    fetch("http://localhost:8080/lists", {
+    fetch(`${process.env.API_URL}/lists`, {
       method: "POST",
       headers,
       body: form,
@@ -103,7 +103,7 @@ const Lists = () => {
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);
 
-    fetch("http://localhost:8080/lists", {
+    fetch(`${process.env.API_URL}/lists`, {
       method: "GET",
       headers,
     })

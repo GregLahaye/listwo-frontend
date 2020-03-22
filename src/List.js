@@ -18,7 +18,7 @@ const List = ({ listId }) => {
     const form = new FormData();
     form.append("id", id);
 
-    fetch("http://localhost:8080/columns", {
+    fetch(`${process.env.API_URL}/columns`, {
       method: "DELETE",
       headers,
       body: form,
@@ -62,7 +62,7 @@ const List = ({ listId }) => {
     form.append("list", listId);
     form.append("title", title);
 
-    fetch("http://localhost:8080/columns", {
+    fetch(`${process.env.API_URL}/columns`, {
       method: "POST",
       headers,
       body: form,
@@ -97,7 +97,7 @@ const List = ({ listId }) => {
   };
 
   const fetchList = () => {
-    const url = new URL("http://localhost:8080/list");
+    const url = new URL(`${process.env.API_URL}/list`);
     url.searchParams.set("list", listId);
 
     const headers = new Headers();
@@ -135,7 +135,7 @@ const List = ({ listId }) => {
   };
 
   const fetchColumns = () => {
-    const url = new URL("http://localhost:8080/columns");
+    const url = new URL(`${process.env.API_URL}/columns`);
     url.searchParams.set("list", listId);
 
     const headers = new Headers();

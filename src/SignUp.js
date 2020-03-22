@@ -15,7 +15,7 @@ const SignUp = () => {
     form.append("email", email);
     form.append("password", password);
 
-    fetch("http://localhost:8080/signup", {
+    fetch(`${process.env.API_URL}/signup`, {
       method: "POST",
       body: form,
     })
