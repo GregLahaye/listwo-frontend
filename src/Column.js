@@ -4,7 +4,7 @@ import AuthContext from "./AuthContext";
 import { navigate } from "@reach/router";
 
 const Column = ({ id: columnId, title }) => {
-  const [auth] = useContext(AuthContext);
+  const [auth, setAuth] = useContext(AuthContext);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [itemTitle, setItemTitle] = useState("");
@@ -37,8 +37,20 @@ const Column = ({ id: columnId, title }) => {
       .then((data) => {
         setItems([...items, data]);
       })
-      .catch(() => {
-        setError("Unknown Error");
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize();
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
       });
 
     setItemTitle("");
@@ -71,8 +83,20 @@ const Column = ({ id: columnId, title }) => {
         setItems(data || []);
         setLoading(false);
       })
-      .catch(() => {
-        setError("Unknown Error");
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize();
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
       });
   }, [auth.id, columnId]);
 

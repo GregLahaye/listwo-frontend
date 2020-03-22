@@ -35,8 +35,20 @@ const Lists = () => {
       .then((data) => {
         setLists([...lists, data]);
       })
-      .catch(() => {
-        setError("Unknown Error");
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize();
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
       });
 
     setTitle("");
@@ -66,8 +78,21 @@ const Lists = () => {
         setLists(data || []);
         setLoading(false);
       })
-      .catch(() => {
-        setError("Unknown Error");
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize();
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
+
         setLoading(false);
       });
   }, [auth.id]);
