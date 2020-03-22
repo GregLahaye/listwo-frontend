@@ -9,6 +9,45 @@ const Lists = () => {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
 
+  const handleDeleteList = (id) => {
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+
+    const form = new FormData();
+    form.append("id", id);
+
+    fetch("http://localhost:8080/lists", {
+      method: "DELETE",
+      headers,
+      body: form,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw response;
+      })
+      .then((data) => {
+        setLists(lists.filter(({ id }) => id != data));
+      })
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize(setAuth);
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
+      });
+  };
+
   const handleAddList = (e) => {
     e.preventDefault();
 
@@ -112,6 +151,12 @@ const Lists = () => {
             ? lists.map((list) => (
                 <li className="list-group-item" key={list.id}>
                   <Link to={list.id}>{list.title}</Link>
+                  <button
+                    className="btn btn-danger float-right"
+                    onClick={() => handleDeleteList(list.id)}
+                  >
+                    Delete
+                  </button>
                 </li>
               ))
             : null}
