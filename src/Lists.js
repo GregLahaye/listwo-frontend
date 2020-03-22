@@ -108,15 +108,13 @@ const Lists = () => {
         <p>Loading</p>
       ) : (
         <ul className="list-group">
-          {lists.length ? (
-            lists.map((list) => (
-              <li className="list-group-item" key={list.id}>
-                <Link to={list.id}>{list.title}</Link>
-              </li>
-            ))
-          ) : (
-            <p>No lists</p>
-          )}
+          {lists.length
+            ? lists.map((list) => (
+                <li className="list-group-item" key={list.id}>
+                  <Link to={list.id}>{list.title}</Link>
+                </li>
+              ))
+            : null}
           <li className="list-group-item">
             <form onSubmit={handleAddList}>
               <div className="form-group">

@@ -170,16 +170,14 @@ const List = ({ listId }) => {
                 />
               </div>
               <button type="submit" className="btn btn-primary">
-                Add list
+                Add column
               </button>
             </form>
           </div>
           <div className="card-deck text-center justify-content-center">
-            {columns && columns.length ? (
-              columns.map((column) => <Column {...column} key={column.id} />)
-            ) : (
-              <p>No columns</p>
-            )}
+            {columns && columns.length
+              ? columns.map((column) => <Column {...column} key={column.id} />)
+              : null}
           </div>
         </main>
       )}
