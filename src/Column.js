@@ -1,6 +1,6 @@
+import AuthContext, { deauthorize } from "./AuthContext";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import React, { useContext, useEffect, useState } from "react";
-import AuthContext from "./AuthContext";
 import { navigate } from "@reach/router";
 
 const Column = ({ id: columnId, title }) => {
@@ -40,7 +40,7 @@ const Column = ({ id: columnId, title }) => {
       .catch((err) => {
         switch (err.status) {
           case 401:
-            deauthorize();
+            deauthorize(setAuth);
             break;
 
           case 403:
@@ -86,7 +86,7 @@ const Column = ({ id: columnId, title }) => {
       .catch((err) => {
         switch (err.status) {
           case 401:
-            deauthorize();
+            deauthorize(setAuth);
             break;
 
           case 403:

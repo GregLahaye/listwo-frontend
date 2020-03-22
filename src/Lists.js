@@ -1,9 +1,9 @@
+import AuthContext, { deauthorize } from "./AuthContext";
 import { Link, navigate } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
-import AuthContext from "./AuthContext";
 
 const Lists = () => {
-  const [auth] = useContext(AuthContext);
+  const [auth, setAuth] = useContext(AuthContext);
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
@@ -38,7 +38,7 @@ const Lists = () => {
       .catch((err) => {
         switch (err.status) {
           case 401:
-            deauthorize();
+            deauthorize(setAuth);
             break;
 
           case 403:
@@ -81,7 +81,7 @@ const Lists = () => {
       .catch((err) => {
         switch (err.status) {
           case 401:
-            deauthorize();
+            deauthorize(setAuth);
             break;
 
           case 403:

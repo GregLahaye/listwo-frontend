@@ -1,10 +1,10 @@
+import AuthContext, { deauthorize } from "./AuthContext";
 import React, { useContext, useEffect, useState } from "react";
-import AuthContext from "./AuthContext";
 import Column from "./Column";
 import { navigate } from "@reach/router";
 
 const List = ({ listId }) => {
-  const [auth] = useContext(AuthContext);
+  const [auth, setAuth] = useContext(AuthContext);
   const [list, setList] = useState({});
   const [columns, setColumns] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const List = ({ listId }) => {
       .catch((err) => {
         switch (err.status) {
           case 401:
-            deauthorize();
+            deauthorize(setAuth);
             break;
 
           case 403:
@@ -81,7 +81,7 @@ const List = ({ listId }) => {
       .catch((err) => {
         switch (err.status) {
           case 401:
-            deauthorize();
+            deauthorize(setAuth);
             break;
 
           case 403:
@@ -117,8 +117,21 @@ const List = ({ listId }) => {
         setColumns(data || []);
         setLoading(false);
       })
-      .catch(() => {
-        setError("Unknown Error");
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize(setAuth);
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
+
         setLoading(false);
       });
   };
