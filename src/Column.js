@@ -10,6 +10,57 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
   const [itemTitle, setItemTitle] = useState("");
   const [error, setError] = useState("");
 
+  const handleDeleteItem = (id) => {
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+
+    const form = new FormData();
+    form.append("id", id);
+
+    fetch("http://localhost:8080/items", {
+      method: "DELETE",
+      headers,
+      body: form,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw response;
+      })
+      .then((data) => {
+        const position = items.find((item) => item.id === data).position;
+
+        let updated = items.filter((item) => item.id != data);
+
+        updated = updated.map((item) => {
+          if (item.position >= position) {
+            item.position = +item.position - 1;
+          }
+
+          return item;
+        });
+
+        setItems(updated);
+      })
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize(setAuth);
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
+      });
+  };
+
   const handleAddItem = (e) => {
     e.preventDefault();
 
@@ -192,16 +243,24 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                               >
-                                {+item.position ? (
-                                  item.title
-                                ) : (
+                                <div>
+                                  {+item.position ? (
+                                    <span>{item.title}</span>
+                                  ) : (
+                                    <button
+                                      className="btn btn-primary"
+                                      onClick={() => handleClick(item.id)}
+                                    >
+                                      {item.title}
+                                    </button>
+                                  )}
                                   <button
-                                    className="btn btn-primary"
-                                    onClick={() => handleClick(item.id)}
+                                    className="btn btn-danger float-right"
+                                    onClick={() => handleDeleteItem(item.id)}
                                   >
-                                    {item.title}
+                                    ✘
                                   </button>
-                                )}
+                                </div>
                               </li>
                             )}
                           </Draggable>
