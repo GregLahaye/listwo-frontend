@@ -4,6 +4,7 @@ import AuthContext from "./AuthContext";
 import Header from "./Header";
 import List from "./List";
 import Lists from "./Lists";
+import NotFound from "./NotFound";
 import { Router } from "@reach/router";
 import SignIn from "./SignIn";
 import SignOut from "./SignOut";
@@ -17,17 +18,16 @@ const App = () => {
 
   return (
     <AuthContext.Provider value={auth}>
-      <div>
-        <Header />
-        <Router>
-          <Welcome path="/" />
-          <SignUp path="/signup" />
-          <SignIn path="/signin" />
-          <SignOut path="/signout" />
-          <Lists path="/lists" />
-          <List path="/lists/:listId" />
-        </Router>
-      </div>
+      <Header />
+      <Router>
+        <Welcome path="/" />
+        <SignUp path="/signup" />
+        <SignIn path="/signin" />
+        <SignOut path="/signout" />
+        <Lists path="/lists" />
+        <List path="/lists/:listId" />
+        <NotFound default />
+      </Router>
     </AuthContext.Provider>
   );
 };

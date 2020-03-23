@@ -190,23 +190,31 @@ const List = ({ listId }) => {
         </div>
       ) : (
         <main role="main" className="container">
-          <div className="d-flex justify-content-between">
-            <h1>{list.title || <Skeleton width={400} />}</h1>
-            <form className="form-inline" onSubmit={handleAddColumn}>
-              <div className="form-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  id="column-title"
-                  placeholder="My new column"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </div>
-              <button type="submit" className="btn btn-primary">
-                Add column
-              </button>
-            </form>
+          <div className="row justify-content-center p-3">
+            <div className="col-md-8 text-center text-lg-left">
+              <h3>{list.title || <Skeleton width={200} />}</h3>
+            </div>
+            <div className="col-md-auto">
+              <form onSubmit={handleAddColumn}>
+                <div className="form-row">
+                  <div className="col-xs-4">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="column-title"
+                      placeholder="My new column"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                  </div>
+                  <div className="col-auto">
+                    <button type="submit" className="btn btn-primary">
+                      Add column
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
           <div className="card-deck text-center justify-content-center">
             {columns && columns.length
