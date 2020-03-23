@@ -216,7 +216,7 @@ const List = ({ listId }) => {
                   fontSize={24}
                 />
               ) : (
-                <Skeleton width={200} />
+                <Skeleton height={50} />
               )}
             </div>
             <div className="col-md-auto">
