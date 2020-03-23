@@ -27,6 +27,7 @@ const Editable = ({ name, placeholder, value, setValue, updateValue }) => {
 
   return editing ? (
     <input
+      type="text"
       ref={input}
       name={name}
       placeholder={placeholder}
@@ -34,9 +35,14 @@ const Editable = ({ name, placeholder, value, setValue, updateValue }) => {
       onChange={handleChange}
       onBlur={handleBlur}
       className="form-control"
+      style={{ height: "auto" }}
     ></input>
   ) : (
-    <button className="btn w-100 text-left" onClick={() => setEditing(true)}>
+    <button
+      className="btn w-100 text-left"
+      onClick={() => setEditing(true)}
+      style={{ height: "auto" }}
+    >
       {value}
     </button>
   );

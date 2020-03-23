@@ -1,6 +1,7 @@
 import AuthContext, { deauthorize } from "./AuthContext";
 import React, { useContext, useEffect, useState } from "react";
 import Column from "./Column";
+import Editable from "./Editable";
 import Skeleton from "react-loading-skeleton";
 import { navigate } from "@reach/router";
 
@@ -8,9 +9,22 @@ const List = ({ listId }) => {
   const [auth, setAuth] = useContext(AuthContext);
   const [list, setList] = useState({});
   const [columns, setColumns] = useState([]);
-  const [title, setTitle] = useState("");
+  const [columnTitle, setColumnTitle] = useState("");
   const [error, setError] = useState("");
 
+  const updateTitle = () => {
+    const url = new URL(`${process.env.API_URL}/lists`);
+    url.searchParams.set("id", listId);
+    url.searchParams.set("title", list.title);
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+
+    fetch(url, {
+      method: "PATCH",
+      headers,
+    });
+  };
   const handleDeleteColumn = (id) => {
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);
@@ -53,14 +67,14 @@ const List = ({ listId }) => {
   const handleAddColumn = (e) => {
     e.preventDefault();
 
-    if (!title.trim()) return;
+    if (!columnTitle.trim()) return;
 
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);
 
     const form = new FormData();
     form.append("list", listId);
-    form.append("title", title);
+    form.append("title", columnTitle);
 
     fetch(`${process.env.API_URL}/columns`, {
       method: "POST",
@@ -93,7 +107,7 @@ const List = ({ listId }) => {
         }
       });
 
-    setTitle("");
+    setColumnTitle("");
   };
 
   const fetchList = () => {
@@ -190,9 +204,19 @@ const List = ({ listId }) => {
         </div>
       ) : (
         <main role="main" className="container">
-          <div className="row justify-content-center p-3">
+          <div className="row justify-content-center pt-3">
             <div className="col-md-8 text-center text-lg-left">
-              <h3>{list.title || <Skeleton width={200} />}</h3>
+              {list.title ? (
+                <Editable
+                  name="title"
+                  placeholder="List title"
+                  value={list.title}
+                  setValue={(title) => setList({ ...list, title })}
+                  updateValue={updateTitle}
+                />
+              ) : (
+                <Skeleton width={200} />
+              )}
             </div>
             <div className="col-md-auto">
               <form onSubmit={handleAddColumn}>
@@ -203,8 +227,8 @@ const List = ({ listId }) => {
                       className="form-control"
                       id="column-title"
                       placeholder="My new column"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
+                      value={columnTitle}
+                      onChange={(e) => setColumnTitle(e.target.value)}
                     />
                   </div>
                   <div className="col-auto">

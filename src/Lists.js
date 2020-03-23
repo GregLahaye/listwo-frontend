@@ -165,7 +165,7 @@ const Lists = () => {
                     {list.title}
                   </Link>
                   <button
-                    className="btn btn-danger float-right"
+                    className="btn btn-sm btn-danger float-right"
                     onClick={() => handleDeleteList(list.id)}
                   >
                     Delete

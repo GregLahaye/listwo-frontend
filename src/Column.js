@@ -233,7 +233,7 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
               updateValue={updateTitle}
             />
             <button
-              className="btn btn-secondary ml-auto"
+              className="btn btn-sm btn-secondary ml-auto"
               onClick={() => handleDeleteColumn(columnId)}
             >
               Delete
