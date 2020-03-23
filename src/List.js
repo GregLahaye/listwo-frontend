@@ -240,7 +240,7 @@ const List = ({ listId }) => {
               </form>
             </div>
           </div>
-          <div className="card-deck text-center justify-content-center">
+          <div className="row">
             {columns && columns.length
               ? columns.map((column) => (
                   <Column
