@@ -315,21 +315,25 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
             ) : null}
           </ul>
           <div className="card-footer">
-            <form onSubmit={handleAddItem}>
-              <div className="form-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  id={`${columnId}-item-title`}
-                  placeholder="My new item"
-                  value={itemTitle}
-                  onChange={(e) => setItemTitle(e.target.value)}
-                />
-              </div>
-              <button type="submit" className="btn btn-primary">
-                Add item
-              </button>
-            </form>
+            <div className="row">
+              <form className="form-inline" onSubmit={handleAddItem}>
+                <div className="col-8">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id={`${columnId}-item-title`}
+                    placeholder="My new item"
+                    value={itemTitle}
+                    onChange={(e) => setItemTitle(e.target.value)}
+                  />
+                </div>
+                <div className="col-2">
+                  <button type="submit" className="btn btn-primary">
+                    Add
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
