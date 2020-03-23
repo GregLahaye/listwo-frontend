@@ -255,10 +255,12 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
                                     </button>
                                   )}
                                   <button
-                                    className="btn btn-sm btn-light float-right"
+                                    type="button"
+                                    className="close float-right"
+                                    aria-label="Close"
                                     onClick={() => handleDeleteItem(item.id)}
                                   >
-                                    ✘
+                                    <span aria-hidden="true">&times;</span>
                                   </button>
                                 </div>
                               </li>
