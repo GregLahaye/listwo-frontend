@@ -201,7 +201,7 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
   };
 
   return (
-    <div>
+    <div className="py-3">
       {error ? (
         <div className="alert alert-danger" role="alert">
           {error}
