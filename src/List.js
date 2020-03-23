@@ -191,7 +191,7 @@ const List = ({ listId }) => {
       ) : (
         <main role="main" className="container">
           <div className="d-flex justify-content-between">
-            <h1>{list.title || <Skeleton />}</h1>
+            <h1>{list.title || <Skeleton width={400} />}</h1>
             <form className="form-inline" onSubmit={handleAddColumn}>
               <div className="form-group">
                 <input
