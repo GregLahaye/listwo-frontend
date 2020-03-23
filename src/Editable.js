@@ -1,6 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const Editable = ({ name, placeholder, value, setValue, updateValue }) => {
+const Editable = ({
+  name,
+  placeholder,
+  value,
+  setValue,
+  updateValue,
+  fontSize,
+}) => {
   const [editing, setEditing] = useState(false);
   const [changed, setChanged] = useState(false);
   const input = useRef();
@@ -35,13 +42,13 @@ const Editable = ({ name, placeholder, value, setValue, updateValue }) => {
       onChange={handleChange}
       onBlur={handleBlur}
       className="form-control"
-      style={{ height: "auto" }}
+      style={{ height: "auto", fontSize }}
     ></input>
   ) : (
     <button
       className="btn w-100 text-left"
       onClick={() => setEditing(true)}
-      style={{ height: "auto" }}
+      style={{ height: "auto", fontSize }}
     >
       {value}
     </button>

@@ -213,6 +213,7 @@ const List = ({ listId }) => {
                   value={list.title}
                   setValue={(title) => setList({ ...list, title })}
                   updateValue={updateTitle}
+                  fontSize={24}
                 />
               ) : (
                 <Skeleton width={200} />

@@ -231,6 +231,7 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
               value={title}
               setValue={setTitle}
               updateValue={updateTitle}
+              fontSize={18}
             />
             <button
               className="btn btn-sm btn-secondary ml-auto"
