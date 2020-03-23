@@ -316,18 +316,21 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
           </ul>
           <div className="card-footer">
             <div className="row">
-              <form className="form-inline" onSubmit={handleAddItem}>
-                <div className="col-8">
+              <form
+                className="form-inline w-100 justify-content-center"
+                onSubmit={handleAddItem}
+              >
+                <div className="col-8 px-0">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control w-100"
                     id={`${columnId}-item-title`}
                     placeholder="My new item"
                     value={itemTitle}
                     onChange={(e) => setItemTitle(e.target.value)}
                   />
                 </div>
-                <div className="col-2">
+                <div className="col-4 px-0 text-center">
                   <button type="submit" className="btn btn-primary">
                     Add
                   </button>
