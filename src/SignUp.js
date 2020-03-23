@@ -1,10 +1,12 @@
 import AuthContext, { validAuth } from "./AuthContext";
+import { Link, Redirect, navigate } from "@reach/router";
 import React, { useContext, useState } from "react";
-import { Redirect, navigate } from "@reach/router";
 
-const SignUp = () => {
+const SignUp = ({ location }) => {
   const [auth, setAuth] = useContext(AuthContext);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(
+    (location && location.state && location.state.email) || "",
+  );
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -46,7 +48,7 @@ const SignUp = () => {
     <Redirect to="/lists" />
   ) : (
     <main role="main" className="container">
-      <h1>Sign Up</h1>
+      <h1>Sign up for an account</h1>
       <form onSubmit={handleSignUp}>
         <div className="form-group">
           <label htmlFor="email">Email address</label>
@@ -71,12 +73,12 @@ const SignUp = () => {
           />
         </div>
         <button type="submit" className="btn btn-primary">
-          Submit
+          Sign Up
         </button>
+        <Link to="/signin" className="btn btn-link" state={{ email }}>
+          Already have an account? Sign in instead
+        </Link>
       </form>
-      <button className="btn btn-secondary" onClick={() => navigate("/signin")}>
-        Switch to Sign In
-      </button>
       <div>
         {error ? (
           <div className="alert alert-danger" role="alert">
