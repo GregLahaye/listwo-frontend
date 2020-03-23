@@ -6,7 +6,7 @@ const Header = () => {
   const [auth] = useContext(AuthContext);
 
   return (
-    <nav className="navbar navbar-light bg-light">
+    <nav className="navbar navbar-dark bg-dark">
       <Link to={auth.accessToken ? "/lists" : "/"}>
         <span className="navbar-brand mb-0 h1">listwo</span>
       </Link>

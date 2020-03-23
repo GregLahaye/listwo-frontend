@@ -51,35 +51,37 @@ const SignIn = ({ location }) => {
   return validAuth(auth) ? (
     <Redirect to="/lists" />
   ) : (
-    <main role="main" className="container">
-      <h1>Sign in to listwo</h1>
+    <main role="main" className="container py-3" style={{ width: 400 }}>
+      <h1 className="h3 font-weight-normal py-3">Sign in to listwo</h1>
       <form onSubmit={handleSignIn}>
         <div className="form-group">
-          <label htmlFor="email">Email address</label>
           <input
             type="email"
-            className="form-control"
+            className="form-control form-control-lg"
             id="email"
-            placeholder="Enter email"
+            placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">Password</label>
           <input
             type="password"
-            className="form-control"
+            className="form-control form-control-lg"
             id="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-lg btn-primary w-100">
           Sign In
         </button>
-        <Link to="/signup" className="btn btn-link" state={{ email }}>
+        <Link
+          to="/signin"
+          className="btn btn-link float-right"
+          state={{ email }}
+        >
           Sign up for an account
         </Link>
       </form>
