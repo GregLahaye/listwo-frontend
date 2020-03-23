@@ -1,18 +1,22 @@
+import AuthContext, { signOut } from "./AuthContext";
 import React, { useContext, useEffect } from "react";
-import AuthContext from "./AuthContext";
+import { Link } from "@reach/router";
 
 const SignOut = () => {
   const [, setAuth] = useContext(AuthContext);
 
   useEffect(() => {
-    setAuth({ id: "", email: "", accessToken: "" });
-
-    localStorage.removeItem("id");
-    localStorage.removeItem("email");
-    localStorage.removeItem("accessToken");
+    signOut(setAuth);
   }, []);
 
-  return <p>Successfully signed out!</p>;
+  return (
+    <main role="main" className="container mt-4">
+      <div className="jumbotron">
+        <h3>You&apos;ve signed out</h3>
+        <Link to="/">Back to home</Link>
+      </div>
+    </main>
+  );
 };
 
 export default SignOut;

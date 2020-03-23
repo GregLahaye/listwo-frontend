@@ -5,12 +5,16 @@ const blankState = { id: "", email: "", accessToken: "" };
 
 const AuthContext = createContext([blankState, () => {}]);
 
-export const deauthorize = (setAuth) => {
+export const signOut = (setAuth) => {
   setAuth(blankState);
 
   localStorage.removeItem("id");
   localStorage.removeItem("email");
   localStorage.removeItem("accessToken");
+};
+
+export const deauthorize = (setAuth) => {
+  signOut(setAuth);
 
   navigate("/signin");
 };
