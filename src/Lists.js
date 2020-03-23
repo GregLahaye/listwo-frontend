@@ -1,6 +1,7 @@
 import AuthContext, { deauthorize } from "./AuthContext";
 import { Link, navigate } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 
 const Lists = () => {
   const [auth, setAuth] = useContext(AuthContext);
@@ -144,7 +145,17 @@ const Lists = () => {
           {error}
         </div>
       ) : loading ? (
-        <p>Loading</p>
+        <ul className="list-group">
+          <li className="list-group-item" style={{ height: 64 }}>
+            <Skeleton />
+          </li>
+          <li className="list-group-item" style={{ height: 64 }}>
+            <Skeleton />
+          </li>
+          <li className="list-group-item" style={{ height: 64 }}>
+            <Skeleton />
+          </li>
+        </ul>
       ) : (
         <ul className="list-group">
           {lists.length

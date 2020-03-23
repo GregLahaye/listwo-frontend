@@ -1,6 +1,7 @@
 import AuthContext, { deauthorize } from "./AuthContext";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import React, { useContext, useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { navigate } from "@reach/router";
 
 const Column = ({ id: columnId, title, handleDeleteColumn }) => {
@@ -205,8 +206,6 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
         <div className="alert alert-danger" role="alert">
           {error}
         </div>
-      ) : loading ? (
-        <p>Loading</p>
       ) : (
         <div className="card">
           <div className="card-header d-flex align-items-center">
@@ -218,8 +217,26 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
               Delete
             </button>
           </div>
-          {items && items.length ? (
-            <ul className="list-group list-group-flush">
+          <ul className="list-group list-group-flush">
+            {loading ? (
+              <div>
+                <li className="list-group-item" style={{ height: 63 }}>
+                  <Skeleton />
+                </li>
+                <li className="list-group-item" style={{ height: 49 }}>
+                  <Skeleton />
+                </li>
+                <li className="list-group-item" style={{ height: 49 }}>
+                  <Skeleton />
+                </li>
+                <li className="list-group-item" style={{ height: 49 }}>
+                  <Skeleton />
+                </li>
+                <li className="list-group-item" style={{ height: 49 }}>
+                  <Skeleton />
+                </li>
+              </div>
+            ) : items && items.length ? (
               <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable">
                   {(provided) => (
@@ -272,8 +289,8 @@ const Column = ({ id: columnId, title, handleDeleteColumn }) => {
                   )}
                 </Droppable>
               </DragDropContext>
-            </ul>
-          ) : null}
+            ) : null}
+          </ul>
           <div className="card-footer">
             <form onSubmit={handleAddItem}>
               <div className="form-group">

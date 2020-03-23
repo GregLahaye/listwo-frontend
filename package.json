@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel src/index.html",
+    "start": "set API_URL=http://localhost:8080&& parcel src/index.html",
     "build": "parcel build src/index.html",
     "format": "prettier src/**/*.{js,html} --write",
     "lint": "eslint src/**/*.js",
@@ -35,6 +35,7 @@
     "bootstrap": "^4.4.1",
     "react": "^16.13.1",
     "react-beautiful-dnd": "^13.0.0",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-loading-skeleton": "^2.0.1"
   }
 }

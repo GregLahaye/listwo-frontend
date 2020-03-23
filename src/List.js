@@ -1,13 +1,13 @@
 import AuthContext, { deauthorize } from "./AuthContext";
 import React, { useContext, useEffect, useState } from "react";
 import Column from "./Column";
+import Skeleton from "react-loading-skeleton";
 import { navigate } from "@reach/router";
 
 const List = ({ listId }) => {
   const [auth, setAuth] = useContext(AuthContext);
   const [list, setList] = useState({});
   const [columns, setColumns] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
 
@@ -154,7 +154,6 @@ const List = ({ listId }) => {
       })
       .then((data) => {
         setColumns(data || []);
-        setLoading(false);
       })
       .catch((err) => {
         switch (err.status) {
@@ -170,8 +169,6 @@ const List = ({ listId }) => {
             setError("Unknown Error");
             break;
         }
-
-        setLoading(false);
       });
   };
 
@@ -191,12 +188,10 @@ const List = ({ listId }) => {
         <div className="alert alert-danger" role="alert">
           {error}
         </div>
-      ) : loading ? (
-        <p>Loading</p>
       ) : (
         <main role="main" className="container">
           <div className="d-flex justify-content-between">
-            <h1>{list.title}</h1>
+            <h1>{list.title || <Skeleton />}</h1>
             <form className="form-inline" onSubmit={handleAddColumn}>
               <div className="form-group">
                 <input
