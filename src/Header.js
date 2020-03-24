@@ -7,7 +7,7 @@ const Header = () => {
 
   return (
     <nav className="navbar navbar-dark bg-dark">
-      <Link to={auth.accessToken ? "/lists" : "/"}>
+      <Link to={isAuthenticated(auth) ? "/lists" : "/"}>
         <span className="navbar-brand mb-0 h1">listwo</span>
       </Link>
       {isAuthenticated(auth) ? (

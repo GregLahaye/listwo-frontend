@@ -1,4 +1,4 @@
-import AuthContext, { deauthorize } from "./AuthContext";
+import AuthContext, { deauthorize, isAuthenticated } from "./AuthContext";
 import React, { useContext, useEffect, useState } from "react";
 import Column from "./Column";
 import Editable from "./Editable";
@@ -11,7 +11,7 @@ const List = ({ listId }) => {
   const [columnTitle, setColumnTitle] = useState("");
   const [error, setError] = useState("");
 
-  const updateTitle = () => {
+  const updateListTitle = () => {
     const url = new URL(`${process.env.API_URL}/lists`);
     url.searchParams.set("id", listId);
     url.searchParams.set("title", list.title);
@@ -23,90 +23,6 @@ const List = ({ listId }) => {
       method: "PATCH",
       headers,
     });
-  };
-  const handleDeleteColumn = (id) => {
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    const form = new FormData();
-    form.append("id", id);
-
-    fetch(`${process.env.API_URL}/columns`, {
-      method: "DELETE",
-      headers,
-      body: form,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
-      .then((data) => {
-        setColumns(columns.filter((column) => column.id != data));
-      })
-      .catch((err) => {
-        switch (err.status) {
-          case 401:
-            deauthorize(setAuth);
-            break;
-
-          case 403:
-            setError("You don't have permission to access this resource");
-            break;
-
-          default:
-            setError("Unknown Error");
-            break;
-        }
-      });
-  };
-
-  const handleAddColumn = (e) => {
-    e.preventDefault();
-
-    if (!columnTitle.trim()) return;
-
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    const form = new FormData();
-    form.append("list", listId);
-    form.append("title", columnTitle);
-
-    fetch(`${process.env.API_URL}/columns`, {
-      method: "POST",
-      headers,
-      body: form,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
-      .then((data) => {
-        setColumns([...columns, data]);
-      })
-      .catch((err) => {
-        switch (err.status) {
-          case 401:
-            deauthorize(setAuth);
-            break;
-
-          case 403:
-            setError("You don't have permission to access this resource");
-            break;
-
-          default:
-            setError("Unknown Error");
-            break;
-        }
-      });
-
-    setColumnTitle("");
   };
 
   const fetchList = () => {
@@ -185,15 +101,100 @@ const List = ({ listId }) => {
       });
   };
 
+  const handleAddColumn = (e) => {
+    e.preventDefault();
+
+    if (!columnTitle.trim()) return;
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+
+    const form = new FormData();
+    form.append("list", listId);
+    form.append("title", columnTitle);
+
+    fetch(`${process.env.API_URL}/columns`, {
+      method: "POST",
+      headers,
+      body: form,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw response;
+      })
+      .then((data) => {
+        setColumns([...columns, data]);
+      })
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize(setAuth);
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
+      });
+
+    setColumnTitle("");
+  };
+
+  const handleDeleteColumn = (id) => {
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+
+    const form = new FormData();
+    form.append("id", id);
+
+    fetch(`${process.env.API_URL}/columns`, {
+      method: "DELETE",
+      headers,
+      body: form,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw response;
+      })
+      .then((data) => {
+        setColumns(columns.filter((column) => column.id != data));
+      })
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize(setAuth);
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
+      });
+  };
+
   useEffect(() => {
-    if (!auth.accessToken) {
+    if (!isAuthenticated(auth)) {
       deauthorize(setAuth);
       return;
     }
 
     fetchList();
     fetchColumns();
-  }, [auth.id, listId]);
+  }, [listId]);
 
   return (
     <div>
@@ -211,7 +212,7 @@ const List = ({ listId }) => {
                   placeholder="List title"
                   value={list.title}
                   setValue={(title) => setList({ ...list, title })}
-                  updateValue={updateTitle}
+                  updateValue={updateListTitle}
                   fontSize={24}
                 />
               ) : (

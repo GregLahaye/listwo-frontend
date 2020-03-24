@@ -1,4 +1,4 @@
-import AuthContext, { deauthorize } from "./AuthContext";
+import AuthContext, { deauthorize, isAuthenticated } from "./AuthContext";
 import { Link, navigate } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -10,17 +10,18 @@ const Lists = () => {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
 
-  const handleDeleteList = (id) => {
+  const fetchLists = () => {
+    if (!isAuthenticated(auth)) {
+      deauthorize(setAuth);
+      return;
+    }
+
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);
 
-    const form = new FormData();
-    form.append("id", id);
-
     fetch(`${process.env.API_URL}/lists`, {
-      method: "DELETE",
+      method: "GET",
       headers,
-      body: form,
     })
       .then((response) => {
         if (response.ok) {
@@ -30,7 +31,8 @@ const Lists = () => {
         throw response;
       })
       .then((data) => {
-        setLists(lists.filter(({ id }) => id != data));
+        setLists(data || []);
+        setLoading(false);
       })
       .catch((err) => {
         switch (err.status) {
@@ -46,6 +48,8 @@ const Lists = () => {
             setError("Unknown Error");
             break;
         }
+
+        setLoading(false);
       });
   };
 
@@ -95,18 +99,17 @@ const Lists = () => {
     setTitle("");
   };
 
-  useEffect(() => {
-    if (!auth.accessToken) {
-      deauthorize(setAuth);
-      return;
-    }
-
+  const handleDeleteList = (id) => {
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);
 
+    const form = new FormData();
+    form.append("id", id);
+
     fetch(`${process.env.API_URL}/lists`, {
-      method: "GET",
+      method: "DELETE",
       headers,
+      body: form,
     })
       .then((response) => {
         if (response.ok) {
@@ -116,8 +119,7 @@ const Lists = () => {
         throw response;
       })
       .then((data) => {
-        setLists(data || []);
-        setLoading(false);
+        setLists(lists.filter(({ id }) => id != data));
       })
       .catch((err) => {
         switch (err.status) {
@@ -133,10 +135,12 @@ const Lists = () => {
             setError("Unknown Error");
             break;
         }
-
-        setLoading(false);
       });
-  }, [auth.id]);
+  };
+
+  useEffect(() => {
+    fetchLists();
+  }, []);
 
   return (
     <div>

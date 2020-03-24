@@ -1,4 +1,4 @@
-import AuthContext, { deauthorize } from "./AuthContext";
+import AuthContext, { deauthorize, isAuthenticated } from "./AuthContext";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import React, { useContext, useEffect, useState } from "react";
 import Editable from "./Editable";
@@ -6,16 +6,60 @@ import Skeleton from "react-loading-skeleton";
 
 const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
   const [auth, setAuth] = useContext(AuthContext);
-  const [title, setTitle] = useState(initialTitle);
+  const [columnTitle, setColumnTitle] = useState(initialTitle);
+  const [itemTitle, setItemTitle] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [itemTitle, setItemTitle] = useState("");
   const [error, setError] = useState("");
 
-  const updateTitle = () => {
+  const fetchItems = () => {
+    if (!isAuthenticated(auth)) {
+      deauthorize(setAuth);
+      return;
+    }
+
+    const url = new URL(`${process.env.API_URL}/items`);
+    url.searchParams.set("column", columnId);
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+
+    fetch(url, {
+      method: "GET",
+      headers,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw response;
+      })
+      .then((data) => {
+        setItems(data || []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize(setAuth);
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
+      });
+  };
+
+  const handleUpdateColumn = () => {
     const url = new URL(`${process.env.API_URL}/columns`);
     url.searchParams.set("id", columnId);
-    url.searchParams.set("title", title);
+    url.searchParams.set("title", columnTitle);
 
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);
@@ -24,6 +68,52 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
       method: "PATCH",
       headers,
     });
+  };
+
+  const handleAddItem = (e) => {
+    e.preventDefault();
+
+    if (!itemTitle.trim()) return;
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+
+    const form = new FormData();
+    form.append("column", columnId);
+    form.append("title", itemTitle);
+
+    fetch(`${process.env.API_URL}/items`, {
+      method: "POST",
+      headers,
+      body: form,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw response;
+      })
+      .then((data) => {
+        setItems([...items, data]);
+      })
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            deauthorize(setAuth);
+            break;
+
+          case 403:
+            setError("You don't have permission to access this resource");
+            break;
+
+          default:
+            setError("Unknown Error");
+            break;
+        }
+      });
+
+    setItemTitle("");
   };
 
   const handleDeleteItem = (id) => {
@@ -77,96 +167,6 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
       });
   };
 
-  const handleAddItem = (e) => {
-    e.preventDefault();
-
-    if (!itemTitle.trim()) return;
-
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    const form = new FormData();
-    form.append("column", columnId);
-    form.append("title", itemTitle);
-
-    fetch(`${process.env.API_URL}/items`, {
-      method: "POST",
-      headers,
-      body: form,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
-      .then((data) => {
-        setItems([...items, data]);
-      })
-      .catch((err) => {
-        switch (err.status) {
-          case 401:
-            deauthorize(setAuth);
-            break;
-
-          case 403:
-            setError("You don't have permission to access this resource");
-            break;
-
-          default:
-            setError("Unknown Error");
-            break;
-        }
-      });
-
-    setItemTitle("");
-  };
-
-  useEffect(() => {
-    if (!auth.accessToken) {
-      deauthorize(setAuth);
-      return;
-    }
-
-    const url = new URL(`${process.env.API_URL}/items`);
-    url.searchParams.set("column", columnId);
-
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    fetch(url, {
-      method: "GET",
-      headers,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
-      .then((data) => {
-        setItems(data || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        switch (err.status) {
-          case 401:
-            deauthorize(setAuth);
-            break;
-
-          case 403:
-            setError("You don't have permission to access this resource");
-            break;
-
-          default:
-            setError("Unknown Error");
-            break;
-        }
-      });
-  }, [auth.id, columnId]);
-
   const handleClick = (id) => {
     reorder(id, 0, items.length - 1);
   };
@@ -214,6 +214,10 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
     reorder(id, result.source.index, result.destination.index);
   };
 
+  useEffect(() => {
+    fetchItems();
+  }, [columnId]);
+
   return (
     <div className="col-md w-100 py-3" style={{ width: 280 }}>
       {error ? (
@@ -226,9 +230,9 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
             <Editable
               name="title"
               placeholder="Column title"
-              value={title}
-              setValue={setTitle}
-              updateValue={updateTitle}
+              value={columnTitle}
+              setValue={setColumnTitle}
+              updateValue={handleUpdateColumn}
               fontSize={18}
             />
             <button
