@@ -160,7 +160,7 @@ const List = ({ listId }) => {
                   fontSize={24}
                 />
               ) : (
-                <Skeleton height={50} />
+                <Skeleton height={46} />
               )}
             </div>
             <div className="col-md-auto">

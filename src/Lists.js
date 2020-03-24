@@ -10,8 +10,9 @@ import Skeleton from "react-loading-skeleton";
 const Lists = () => {
   const [auth, setAuth] = useContext(AuthContext);
   const [lists, setLists] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [listTitle, setListTitle] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
 
   const fetchLists = () => {
@@ -50,6 +51,8 @@ const Lists = () => {
     const title = listTitle.trim();
 
     if (!title.trim()) return;
+
+    setPending(true);
 
     request("POST", "lists", { form: { title }, auth })
       .then((data) => {
@@ -111,13 +114,13 @@ const Lists = () => {
       ) : loading ? (
         <ul className="list-group">
           <li className="list-group-item" style={{ height: 64 }}>
-            <Skeleton />
+            <Skeleton height={30} />
           </li>
           <li className="list-group-item" style={{ height: 64 }}>
-            <Skeleton />
+            <Skeleton height={30} />
           </li>
           <li className="list-group-item" style={{ height: 64 }}>
-            <Skeleton />
+            <Skeleton height={30} />
           </li>
         </ul>
       ) : (
@@ -137,6 +140,11 @@ const Lists = () => {
                 </li>
               ))
             : null}
+          {pending ? (
+            <li className="list-group-item" style={{ height: 64 }}>
+              <Skeleton height={30} />
+            </li>
+          ) : null}
           <li className="list-group-item">
             <form onSubmit={handleAddList}>
               <div className="form-group">
