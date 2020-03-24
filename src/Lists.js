@@ -79,25 +79,23 @@ const Lists = () => {
   const handleDeleteList = (id) => {
     if (!confirm("Are you sure?")) return;
 
-    request("DELETE", "lists", { form: { id }, auth })
-      .then((data) => {
-        setLists(lists.filter(({ id }) => id !== data));
-      })
-      .catch((err) => {
-        switch (err.status) {
-          case 401:
-            deauthorize(setAuth);
-            break;
+    setLists(lists.filter((list) => list.id !== id));
 
-          case 403:
-            setError("You don't have permission to access this resource");
-            break;
+    request("DELETE", "lists", { form: { id }, auth }).catch((err) => {
+      switch (err.status) {
+        case 401:
+          deauthorize(setAuth);
+          break;
 
-          default:
-            setError("Unknown Error");
-            break;
-        }
-      });
+        case 403:
+          setError("You don't have permission to access this resource");
+          break;
+
+        default:
+          setError("Unknown Error");
+          break;
+      }
+    });
   };
 
   useEffect(() => {
