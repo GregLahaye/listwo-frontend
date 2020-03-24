@@ -1,5 +1,5 @@
-import AuthContext, { deauthorize } from "./AuthContext";
-import { Link, navigate } from "@reach/router";
+import AuthContext, { deauthorize, validAuth } from "./AuthContext";
+import { Link, navigate, Redirect } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
@@ -97,7 +97,7 @@ const Lists = () => {
 
   useEffect(() => {
     if (!auth.accessToken) {
-      navigate("/signin");
+      deauthorize(setAuth);
       return;
     }
 
@@ -138,7 +138,7 @@ const Lists = () => {
       });
   }, [auth.id]);
 
-  return (
+  return validAuth(auth) ? (
     <div>
       {error ? (
         <div className="alert alert-danger" role="alert">
@@ -193,6 +193,8 @@ const Lists = () => {
         </ul>
       )}
     </div>
+  ) : (
+    <Redirect to="/signin" />
   );
 };
 

@@ -1,9 +1,9 @@
-import AuthContext, { deauthorize } from "./AuthContext";
+import AuthContext, { deauthorize, validAuth } from "./AuthContext";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import React, { useContext, useEffect, useState } from "react";
 import Editable from "./Editable";
 import Skeleton from "react-loading-skeleton";
-import { navigate } from "@reach/router";
+import { Redirect } from "@reach/router";
 
 const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
   const [auth, setAuth] = useContext(AuthContext);
@@ -126,7 +126,7 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
 
   useEffect(() => {
     if (!auth.accessToken) {
-      navigate("/signin");
+      deauthorize(setAuth);
       return;
     }
 
@@ -215,7 +215,7 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
     reorder(id, result.source.index, result.destination.index);
   };
 
-  return (
+  return validAuth(auth) ? (
     <div className="col-md w-100 py-3" style={{ width: 280 }}>
       {error ? (
         <div className="alert alert-danger" role="alert">
@@ -340,6 +340,8 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
         </div>
       )}
     </div>
+  ) : (
+    <Redirect to="/signin" />
   );
 };
 

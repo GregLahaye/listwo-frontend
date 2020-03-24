@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { navigate } from "@reach/router";
+import { redirectTo } from "@reach/router";
 
 const blankState = { id: "", email: "", accessToken: "" };
 
@@ -16,7 +16,7 @@ export const signOut = (setAuth) => {
 export const deauthorize = (setAuth) => {
   signOut(setAuth);
 
-  navigate("/signin");
+  redirectTo("/signin");
 };
 
 export const validAuth = (auth) => {
