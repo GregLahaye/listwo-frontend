@@ -8,7 +8,13 @@ import React, { useContext, useEffect, useState } from "react";
 import Editable from "./Editable";
 import Skeleton from "react-loading-skeleton";
 
-const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
+const Column = ({
+  id: columnId,
+  title: initialTitle,
+  handleDeleteColumn,
+  pending,
+  fresh,
+}) => {
   const [auth, setAuth] = useContext(AuthContext);
   const [columnTitle, setColumnTitle] = useState(initialTitle);
   const [itemTitle, setItemTitle] = useState("");
@@ -21,6 +27,8 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
       deauthorize(setAuth);
       return;
     }
+
+    if (pending) return;
 
     request("GET", "items", { params: { column: columnId }, auth })
       .then((data) => {
@@ -45,6 +53,8 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
   };
 
   const handleUpdateColumn = () => {
+    if (pending) return;
+
     request("PATCH", "columns", {
       params: { id: columnId, title: columnTitle },
       auth,
@@ -54,15 +64,16 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
   const handleAddItem = (e) => {
     e.preventDefault();
 
+    if (pending) return;
+
     const title = itemTitle.trim();
 
     if (!title) return;
 
     const id = String(Date.now());
     const position = items.length;
-    const pending = true;
 
-    setItems([...items, { id, position, title, pending }]);
+    setItems([...items, { id, position, title, pending: true }]);
 
     request("POST", "items", {
       form: { column: columnId, title },
@@ -93,6 +104,8 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
   };
 
   const handleDeleteItem = (id) => {
+    if (pending) return;
+
     const deleted = items.find((item) => item.id === id);
 
     if (deleted.pending) return;
@@ -194,7 +207,7 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
             </button>
           </div>
           <ul className="list-group list-group-flush">
-            {loading ? (
+            {loading && !pending && !fresh ? (
               <div>
                 <li className="list-group-item" style={{ height: 63 }}>
                   <Skeleton />

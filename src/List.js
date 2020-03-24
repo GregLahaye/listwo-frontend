@@ -73,9 +73,17 @@ const List = ({ listId }) => {
 
     if (!title.trim()) return;
 
+    const id = String(Date.now());
+    const pending = true;
+
+    setColumns([...columns, { id, title, pending }]);
+
     request("POST", "columns", { form: { list: listId, title }, auth })
       .then((data) => {
-        setColumns([...columns, data]);
+        setColumns((columns) => [
+          ...columns.filter((column) => column.id !== id),
+          { ...data, fresh: true },
+        ]);
       })
       .catch((err) => {
         switch (err.status) {
@@ -97,27 +105,29 @@ const List = ({ listId }) => {
   };
 
   const handleDeleteColumn = (id) => {
+    const deleted = columns.find((column) => column.id === id);
+
+    if (deleted.pending) return;
+
     if (!confirm("Are you sure?")) return;
 
-    request("DELETE", "columns", { form: { id }, auth })
-      .then((data) => {
-        setColumns(columns.filter((column) => column.id !== data));
-      })
-      .catch((err) => {
-        switch (err.status) {
-          case 401:
-            deauthorize(setAuth);
-            break;
+    setColumns(columns.filter((column) => column.id !== id));
 
-          case 403:
-            setError("You don't have permission to access this resource");
-            break;
+    request("DELETE", "columns", { form: { id }, auth }).catch((err) => {
+      switch (err.status) {
+        case 401:
+          deauthorize(setAuth);
+          break;
 
-          default:
-            setError("Unknown Error");
-            break;
-        }
-      });
+        case 403:
+          setError("You don't have permission to access this resource");
+          break;
+
+        default:
+          setError("Unknown Error");
+          break;
+      }
+    });
   };
 
   useEffect(() => {
