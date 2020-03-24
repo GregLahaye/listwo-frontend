@@ -193,7 +193,6 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
 
     const url = new URL(`${process.env.API_URL}/items`);
     url.searchParams.set("id", id);
-    url.searchParams.set("src", src);
     url.searchParams.set("dst", dst);
 
     const headers = new Headers();
