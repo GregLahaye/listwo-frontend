@@ -1,4 +1,8 @@
-import AuthContext, { deauthorize, isAuthenticated } from "./AuthContext";
+import AuthContext, {
+  deauthorize,
+  isAuthenticated,
+  request,
+} from "./AuthContext";
 import { Link, navigate } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -7,7 +11,7 @@ const Lists = () => {
   const [auth, setAuth] = useContext(AuthContext);
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [title, setTitle] = useState("");
+  const [listTitle, setListTitle] = useState("");
   const [error, setError] = useState("");
 
   const fetchLists = () => {
@@ -16,20 +20,7 @@ const Lists = () => {
       return;
     }
 
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    fetch(`${process.env.API_URL}/lists`, {
-      method: "GET",
-      headers,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("GET", "lists", { auth })
       .then((data) => {
         setLists(data || []);
         setLoading(false);
@@ -56,29 +47,15 @@ const Lists = () => {
   const handleAddList = (e) => {
     e.preventDefault();
 
+    const title = listTitle.trim();
+
     if (!title.trim()) return;
 
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    const form = new FormData();
-    form.append("title", title);
-
-    fetch(`${process.env.API_URL}/lists`, {
-      method: "POST",
-      headers,
-      body: form,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("POST", "lists", { form: { title }, auth })
       .then((data) => {
         setLists([...lists, data]);
-        navigate("./lists/" + data.id);
+
+        navigate(`/lists/${data.id}`);
       })
       .catch((err) => {
         switch (err.status) {
@@ -96,28 +73,11 @@ const Lists = () => {
         }
       });
 
-    setTitle("");
+    setListTitle("");
   };
 
   const handleDeleteList = (id) => {
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    const form = new FormData();
-    form.append("id", id);
-
-    fetch(`${process.env.API_URL}/lists`, {
-      method: "DELETE",
-      headers,
-      body: form,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("DELETE", "lists", { form: { id }, auth })
       .then((data) => {
         setLists(lists.filter(({ id }) => id != data));
       })
@@ -185,8 +145,8 @@ const Lists = () => {
                   className="form-control"
                   id="list-title"
                   placeholder="My new list"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  value={listTitle}
+                  onChange={(e) => setListTitle(e.target.value)}
                 />
               </div>
               <button type="submit" className="btn btn-primary">

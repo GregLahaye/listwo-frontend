@@ -1,6 +1,6 @@
+import AuthContext, { request } from "./AuthContext";
 import { Link, navigate } from "@reach/router";
 import React, { useContext, useState } from "react";
-import AuthContext from "./AuthContext";
 
 const SignUp = ({ location }) => {
   const [, setAuth] = useContext(AuthContext);
@@ -18,21 +18,7 @@ const SignUp = ({ location }) => {
       return;
     }
 
-    const form = new FormData();
-    form.append("email", email);
-    form.append("password", password);
-
-    fetch(`${process.env.API_URL}/signup`, {
-      method: "POST",
-      body: form,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("POST", "signup", { form: { email, password } })
       .then((data) => {
         const { id, email, accessToken } = data;
 

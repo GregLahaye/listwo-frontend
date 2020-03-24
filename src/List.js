@@ -1,4 +1,8 @@
-import AuthContext, { deauthorize, isAuthenticated } from "./AuthContext";
+import AuthContext, {
+  deauthorize,
+  isAuthenticated,
+  request,
+} from "./AuthContext";
 import React, { useContext, useEffect, useState } from "react";
 import Column from "./Column";
 import Editable from "./Editable";
@@ -12,37 +16,14 @@ const List = ({ listId }) => {
   const [error, setError] = useState("");
 
   const updateListTitle = () => {
-    const url = new URL(`${process.env.API_URL}/lists`);
-    url.searchParams.set("id", listId);
-    url.searchParams.set("title", list.title);
-
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    fetch(url, {
-      method: "PATCH",
-      headers,
+    request("PATCH", "lists", {
+      params: { id: listId, title: list.title },
+      auth,
     });
   };
 
   const fetchList = () => {
-    const url = new URL(`${process.env.API_URL}/list`);
-    url.searchParams.set("id", listId);
-
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    fetch(url, {
-      method: "GET",
-      headers,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("GET", "list", { params: { id: listId }, auth })
       .then((data) => {
         setList(data);
       })
@@ -64,23 +45,7 @@ const List = ({ listId }) => {
   };
 
   const fetchColumns = () => {
-    const url = new URL(`${process.env.API_URL}/columns`);
-    url.searchParams.set("list", listId);
-
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    fetch(url, {
-      method: "GET",
-      headers,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("GET", "columns", { params: { list: listId }, auth })
       .then((data) => {
         setColumns(data || []);
       })
@@ -104,27 +69,11 @@ const List = ({ listId }) => {
   const handleAddColumn = (e) => {
     e.preventDefault();
 
-    if (!columnTitle.trim()) return;
+    const title = columnTitle.trim();
 
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+    if (!title.trim()) return;
 
-    const form = new FormData();
-    form.append("list", listId);
-    form.append("title", columnTitle);
-
-    fetch(`${process.env.API_URL}/columns`, {
-      method: "POST",
-      headers,
-      body: form,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("POST", "columns", { form: { list: listId, title }, auth })
       .then((data) => {
         setColumns([...columns, data]);
       })
@@ -148,24 +97,7 @@ const List = ({ listId }) => {
   };
 
   const handleDeleteColumn = (id) => {
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    const form = new FormData();
-    form.append("id", id);
-
-    fetch(`${process.env.API_URL}/columns`, {
-      method: "DELETE",
-      headers,
-      body: form,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("DELETE", "columns", { form: { id }, auth })
       .then((data) => {
         setColumns(columns.filter((column) => column.id != data));
       })

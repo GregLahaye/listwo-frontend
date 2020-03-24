@@ -1,4 +1,8 @@
-import AuthContext, { deauthorize, isAuthenticated } from "./AuthContext";
+import AuthContext, {
+  deauthorize,
+  isAuthenticated,
+  request,
+} from "./AuthContext";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import React, { useContext, useEffect, useState } from "react";
 import Editable from "./Editable";
@@ -18,23 +22,7 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
       return;
     }
 
-    const url = new URL(`${process.env.API_URL}/items`);
-    url.searchParams.set("column", columnId);
-
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    fetch(url, {
-      method: "GET",
-      headers,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("GET", "items", { params: { column: columnId }, auth })
       .then((data) => {
         setItems(data || []);
         setLoading(false);
@@ -57,43 +45,20 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
   };
 
   const handleUpdateColumn = () => {
-    const url = new URL(`${process.env.API_URL}/columns`);
-    url.searchParams.set("id", columnId);
-    url.searchParams.set("title", columnTitle);
-
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    fetch(url, {
-      method: "PATCH",
-      headers,
+    request("PATCH", "columns", {
+      params: { id: columnId, title: columnTitle },
+      auth,
     });
   };
 
   const handleAddItem = (e) => {
     e.preventDefault();
 
-    if (!itemTitle.trim()) return;
+    const title = itemTitle.trim();
 
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
+    if (!title) return;
 
-    const form = new FormData();
-    form.append("column", columnId);
-    form.append("title", itemTitle);
-
-    fetch(`${process.env.API_URL}/items`, {
-      method: "POST",
-      headers,
-      body: form,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("POST", "items", { form: { column: columnId, title }, auth })
       .then((data) => {
         setItems([...items, data]);
       })
@@ -117,24 +82,7 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
   };
 
   const handleDeleteItem = (id) => {
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    const form = new FormData();
-    form.append("id", id);
-
-    fetch(`${process.env.API_URL}/items`, {
-      method: "DELETE",
-      headers,
-      body: form,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw response;
-      })
+    request("DELETE", "items", { form: { id }, auth })
       .then((data) => {
         const position = items.find((item) => item.id === data).position;
 
@@ -190,17 +138,7 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
 
     setItems(reordered);
 
-    const url = new URL(`${process.env.API_URL}/items`);
-    url.searchParams.set("id", id);
-    url.searchParams.set("dst", dst);
-
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${auth.accessToken}`);
-
-    fetch(url, {
-      method: "PATCH",
-      headers,
-    });
+    request("PATCH", "items", { params: { id, dst }, auth });
   };
 
   const onDragEnd = (result) => {
