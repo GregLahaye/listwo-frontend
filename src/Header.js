@@ -1,4 +1,4 @@
-import AuthContext, { validAuth } from "./AuthContext";
+import AuthContext, { isAuthenticated } from "./AuthContext";
 import React, { useContext } from "react";
 import { Link } from "@reach/router";
 
@@ -10,7 +10,7 @@ const Header = () => {
       <Link to={auth.accessToken ? "/lists" : "/"}>
         <span className="navbar-brand mb-0 h1">listwo</span>
       </Link>
-      {validAuth(auth) ? (
+      {isAuthenticated(auth) ? (
         <Link
           to="/signout"
           className="btn btn-secondary mx-1"

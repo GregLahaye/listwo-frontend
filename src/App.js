@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import React, { useState } from "react";
+import Route, { AUTHENTICATED, UNAUTHENTICATED } from "./Route";
 import AuthContext from "./AuthContext";
 import Header from "./Header";
 import List from "./List";
@@ -21,12 +22,12 @@ const App = () => {
     <AuthContext.Provider value={auth}>
       <Header />
       <Router>
-        <Welcome path="/" />
-        <SignUp path="/signup" />
-        <SignIn path="/signin" />
-        <SignOut path="/signout" />
-        <Lists path="/lists" />
-        <List path="/lists/:listId" />
+        <Route as={Welcome} path="/" redirect={AUTHENTICATED} />
+        <Route as={SignUp} path="/signup" redirect={AUTHENTICATED} />
+        <Route as={SignIn} path="/signin" redirect={AUTHENTICATED} />
+        <Route as={SignOut} path="/signout" redirect={UNAUTHENTICATED} />
+        <Route as={Lists} path="/lists" redirect={UNAUTHENTICATED} />
+        <Route as={List} path="/lists/:listId" redirect={UNAUTHENTICATED} />
         <NotFound default />
       </Router>
     </AuthContext.Provider>

@@ -1,9 +1,7 @@
-import AuthContext, { validAuth } from "./AuthContext";
-import React, { useContext, useState } from "react";
-import { Redirect, navigate } from "@reach/router";
+import React, { useState } from "react";
+import { navigate } from "@reach/router";
 
 const Welcome = () => {
-  const [auth] = useContext(AuthContext);
   const [email, setEmail] = useState("");
 
   const switchToSignUp = (e) => {
@@ -12,9 +10,7 @@ const Welcome = () => {
     navigate("/signup", { state: { email } });
   };
 
-  return validAuth(auth) ? (
-    <Redirect to="/lists" />
-  ) : (
+  return (
     <main role="main" className="container mt-4">
       <div className="jumbotron">
         <h1>

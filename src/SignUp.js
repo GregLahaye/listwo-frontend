@@ -1,9 +1,9 @@
-import AuthContext, { validAuth } from "./AuthContext";
-import { Link, Redirect, navigate } from "@reach/router";
+import { Link, navigate } from "@reach/router";
 import React, { useContext, useState } from "react";
+import AuthContext from "./AuthContext";
 
 const SignUp = ({ location }) => {
-  const [auth, setAuth] = useContext(AuthContext);
+  const [, setAuth] = useContext(AuthContext);
   const [email, setEmail] = useState(
     (location && location.state && location.state.email) || "",
   );
@@ -49,9 +49,7 @@ const SignUp = ({ location }) => {
       });
   };
 
-  return validAuth(auth) ? (
-    <Redirect to="/lists" />
-  ) : (
+  return (
     <main role="main" className="container py-3" style={{ width: 400 }}>
       <h1 className="h3 font-weight-normal py-3">Sign up for an account</h1>
       <form onSubmit={handleSignUp}>

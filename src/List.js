@@ -1,9 +1,8 @@
-import AuthContext, { deauthorize, validAuth } from "./AuthContext";
+import AuthContext, { deauthorize } from "./AuthContext";
 import React, { useContext, useEffect, useState } from "react";
 import Column from "./Column";
 import Editable from "./Editable";
 import Skeleton from "react-loading-skeleton";
-import { Redirect } from "@reach/router";
 
 const List = ({ listId }) => {
   const [auth, setAuth] = useContext(AuthContext);
@@ -196,7 +195,7 @@ const List = ({ listId }) => {
     fetchColumns();
   }, [auth.id, listId]);
 
-  return validAuth(auth) ? (
+  return (
     <div>
       {error ? (
         <div className="alert alert-danger" role="alert">
@@ -255,8 +254,6 @@ const List = ({ listId }) => {
         </main>
       )}
     </div>
-  ) : (
-    <Redirect to="/lists" />
   );
 };
 

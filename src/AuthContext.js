@@ -19,8 +19,8 @@ export const deauthorize = (setAuth) => {
   redirectTo("/signin");
 };
 
-export const validAuth = (auth) => {
-  return auth.id && auth.email && auth.accessToken;
+export const isAuthenticated = (auth) => {
+  return !!(auth.id && auth.email && auth.accessToken);
 };
 
 export default AuthContext;
