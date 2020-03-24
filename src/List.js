@@ -101,7 +101,7 @@ const List = ({ listId }) => {
 
     request("DELETE", "columns", { form: { id }, auth })
       .then((data) => {
-        setColumns(columns.filter((column) => column.id != data));
+        setColumns(columns.filter((column) => column.id !== data));
       })
       .catch((err) => {
         switch (err.status) {

@@ -58,11 +58,22 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
 
     if (!title) return;
 
-    request("POST", "items", { form: { column: columnId, title }, auth })
+    const id = String(Date.now());
+    const position = items.length;
+    const pending = true;
+
+    setItems([...items, { id, position, title, pending }]);
+
+    request("POST", "items", {
+      form: { column: columnId, title },
+      auth,
+    })
       .then((data) => {
-        setItems([...items, data]);
+        setItems((items) => [...items.filter((item) => item.id !== id), data]);
       })
       .catch((err) => {
+        setItems((items) => items.filter((item) => item.id !== id));
+
         switch (err.status) {
           case 401:
             deauthorize(setAuth);
@@ -82,37 +93,39 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
   };
 
   const handleDeleteItem = (id) => {
-    request("DELETE", "items", { form: { id }, auth })
-      .then((data) => {
-        const position = items.find((item) => item.id === data).position;
+    const deleted = items.find((item) => item.id === id);
 
-        let updated = items.filter((item) => item.id != data);
+    if (deleted.pending) return;
 
-        updated = updated.map((item) => {
-          if (item.position >= position) {
+    setItems((items) =>
+      items.reduce((filtered, item) => {
+        if (item.id !== id) {
+          if (item.position >= deleted.position) {
             item.position = +item.position - 1;
           }
 
-          return item;
-        });
-
-        setItems(updated);
-      })
-      .catch((err) => {
-        switch (err.status) {
-          case 401:
-            deauthorize(setAuth);
-            break;
-
-          case 403:
-            setError("You don't have permission to access this resource");
-            break;
-
-          default:
-            setError("Unknown Error");
-            break;
+          filtered.push(item);
         }
-      });
+
+        return filtered;
+      }, []),
+    );
+
+    request("DELETE", "items", { form: { id }, auth }).catch((err) => {
+      switch (err.status) {
+        case 401:
+          deauthorize(setAuth);
+          break;
+
+        case 403:
+          setError("You don't have permission to access this resource");
+          break;
+
+        default:
+          setError("Unknown Error");
+          break;
+      }
+    });
   };
 
   const handleClick = (id) => {
@@ -234,14 +247,25 @@ const Column = ({ id: columnId, title: initialTitle, handleDeleteColumn }) => {
                                       {item.title}
                                     </button>
                                   )}
-                                  <button
-                                    type="button"
-                                    className="close float-right"
-                                    aria-label="Close"
-                                    onClick={() => handleDeleteItem(item.id)}
-                                  >
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
+                                  {item.pending ? (
+                                    <div
+                                      className="spinner-border float-right"
+                                      role="status"
+                                    >
+                                      <span className="sr-only">
+                                        Loading...
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      className="close float-right"
+                                      aria-label="Close"
+                                      onClick={() => handleDeleteItem(item.id)}
+                                    >
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  )}
                                 </div>
                               </li>
                             )}

@@ -81,7 +81,7 @@ const Lists = () => {
 
     request("DELETE", "lists", { form: { id }, auth })
       .then((data) => {
-        setLists(lists.filter(({ id }) => id != data));
+        setLists(lists.filter(({ id }) => id !== data));
       })
       .catch((err) => {
         switch (err.status) {
