@@ -77,6 +77,8 @@ const Lists = () => {
   };
 
   const handleDeleteList = (id) => {
+    if (!confirm("Are you sure?")) return;
+
     request("DELETE", "lists", { form: { id }, auth })
       .then((data) => {
         setLists(lists.filter(({ id }) => id != data));

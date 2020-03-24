@@ -97,6 +97,8 @@ const List = ({ listId }) => {
   };
 
   const handleDeleteColumn = (id) => {
+    if (!confirm("Are you sure?")) return;
+
     request("DELETE", "columns", { form: { id }, auth })
       .then((data) => {
         setColumns(columns.filter((column) => column.id != data));
