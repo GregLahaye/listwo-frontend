@@ -13,6 +13,11 @@ const SignUp = ({ location }) => {
   const handleSignUp = (e) => {
     e.preventDefault();
 
+    if (password.length < 8) {
+      setError("Password must be at least eight characters");
+      return;
+    }
+
     const form = new FormData();
     form.append("email", email);
     form.append("password", password);
@@ -81,13 +86,11 @@ const SignUp = ({ location }) => {
           Already have an account? Sign in instead
         </Link>
       </form>
-      <div>
-        {error ? (
-          <div className="alert alert-danger" role="alert">
-            {error}
-          </div>
-        ) : null}
-      </div>
+      {error ? (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      ) : null}
     </main>
   );
 };

@@ -112,7 +112,7 @@ const List = ({ listId }) => {
 
   const fetchList = () => {
     const url = new URL(`${process.env.API_URL}/list`);
-    url.searchParams.set("list", listId);
+    url.searchParams.set("id", listId);
 
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${auth.accessToken}`);
