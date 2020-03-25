@@ -154,7 +154,7 @@ const List = ({ listId }) => {
         <main role="main" className="container">
           <div className="row justify-content-center pt-3">
             <div className="col-md-8 text-center text-lg-left">
-              {loading ? (
+              {!loading ? (
                 <Editable
                   name="title"
                   placeholder="List title"
