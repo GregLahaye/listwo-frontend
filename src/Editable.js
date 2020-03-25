@@ -10,6 +10,7 @@ const Editable = ({
 }) => {
   const [editing, setEditing] = useState(false);
   const [changed, setChanged] = useState(false);
+  const [previous, setPrevious] = useState("");
   const input = useRef();
 
   useEffect(() => {
@@ -28,8 +29,18 @@ const Editable = ({
     setEditing(false);
 
     if (changed) {
-      updateValue();
+      if (value) {
+        updateValue();
+      } else {
+        setValue(previous);
+      }
     }
+  };
+
+  const handleClick = () => {
+    setEditing(true);
+
+    setPrevious(value);
   };
 
   return editing ? (
@@ -47,7 +58,7 @@ const Editable = ({
   ) : (
     <button
       className="btn w-100 text-left"
-      onClick={() => setEditing(true)}
+      onClick={handleClick}
       style={{ height: "auto", fontSize }}
     >
       {value}
