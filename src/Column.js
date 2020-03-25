@@ -55,6 +55,8 @@ const Column = ({
   const handleUpdateColumn = () => {
     if (pending) return;
 
+    if (!columnTitle) return;
+
     request("PATCH", "columns", {
       params: { id: columnId, title: columnTitle },
       auth,

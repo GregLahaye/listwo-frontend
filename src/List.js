@@ -13,9 +13,12 @@ const List = ({ listId }) => {
   const [list, setList] = useState({});
   const [columns, setColumns] = useState([]);
   const [columnTitle, setColumnTitle] = useState("");
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const updateListTitle = () => {
+    if (!list.title) return;
+
     request("PATCH", "lists", {
       params: { id: listId, title: list.title },
       auth,
@@ -26,6 +29,7 @@ const List = ({ listId }) => {
     request("GET", "list", { params: { id: listId }, auth })
       .then((data) => {
         setList(data);
+        setLoading(false);
       })
       .catch((err) => {
         switch (err.status) {
@@ -150,7 +154,7 @@ const List = ({ listId }) => {
         <main role="main" className="container">
           <div className="row justify-content-center pt-3">
             <div className="col-md-8 text-center text-lg-left">
-              {list.title ? (
+              {loading ? (
                 <Editable
                   name="title"
                   placeholder="List title"
